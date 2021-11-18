@@ -4,16 +4,11 @@ const { engine } = require('express-handlebars');
 const jsonwebtoken = require("jsonwebtoken");
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const jsonServer = require('json-server');
-const server = jsonServer.create();
-const router = jsonServer.router('src/models/db.json');
 
 const route = require('./routes');
 
 const app = express();
 const port = 4000;
-
-const accessTokenSecret = 'youraccesstokensecret';
 
 // Use static folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -32,7 +27,6 @@ app.use(
 );
 app.use(bodyParser.json());
 
-server.use(router);
 
 app.engine('hbs', engine({ 
     extname: '.hbs' 

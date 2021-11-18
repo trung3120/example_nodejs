@@ -1,25 +1,44 @@
+
+const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
-const jsonServer = require('json-server');
-const server = jsonServer.create();
-const router = jsonServer.router('src/models/db.json');
+const accessTokenSecret = 'youraccesstokensecret';
+
+const users = [
+    {
+        username: 'junnhn',
+        password: '123admin',
+        role: 'admin'
+    }, {
+        username: 'anna',
+        password: '123member',
+        role: 'member'
+    }
+];
+
 class SiteController {
     // [GET] / login
     index(req, res) {
         res.render('login');
     }
+    
     auth(req, res) {
-        // res.send('Incorrect');
-        var username = req.body.username;
-        var password = req.body.password;
-        if (username == junnhn && password == 123) {
-            req.session.loggedin = true;
-            req.session.username = username;
-            // res.redirect('/auth');
-            res.redirect('auth');
+        // Read username and password from request body
+        const { username, password } = req.body;
+    
+        // Filter user from the users array by username and password
+        const user = users.find(u => { return u.username === username && u.password === password });
+    
+        if (user) {
+            // Generate an access token
+            const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret);
+    
+            res.json({
+                accessToken
+            });
         } else {
-            res.send('Incorrect Username and/or Password!');
+            res.send('Username or password incorrect');
         }
-    }
+    };
 }
 
 module.exports = new SiteController;
